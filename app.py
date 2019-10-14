@@ -38,7 +38,6 @@ def Awal(data):
             result = cursor.fetchone()
 
         print(result)
-        print(result['nama'])
 
         return jsonify({'fulfillmentText': result['nama']})
 
