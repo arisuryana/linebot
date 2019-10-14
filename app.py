@@ -41,13 +41,6 @@ def Awal(data):
             cursor.execute(sql, (cekUserID))
             result = cursor.fetchone()
 
-        with connection.cursor() as cursor:
-            sql = "INSERT INTO tb_inbox (id_pesan, pesan, userID, tanggal) VALUES (%s, %s, %s, %s)"
-            cursor.execute(sql, (id_pesan, pesan, cekUserID, date.today().strftime("%Y-%m-%d")))
-            id_inbox = cursor.lastrowid
-
-        connection.commit()
-
         response = {
             'fulfillmentMessages': [
                 {
@@ -68,6 +61,13 @@ def Awal(data):
                 }
             ]
         }
+
+        with connection.cursor() as cursor:
+            sql = "INSERT INTO tb_inbox (id_pesan, pesan, userID, tanggal) VALUES (%s, %s, %s, %s)"
+            cursor.execute(sql, (id_pesan, pesan, cekUserID, date.today().strftime("%Y-%m-%d")))
+            id_inbox = cursor.lastrowid
+
+        connection.commit()
 
         with connection.cursor() as cursor:
             sql = "INSERT INTO tb_outbox (id_inbox, response) VALUES (%s, %s)"
