@@ -117,11 +117,11 @@ def AwalCustom(data):
             result = cursor.fetchone()
 
         response = {
-            'fulfillmentText': "Akun anda sudah terintegrasi dengan Akun Simak !"
+            'fulfillmentText': "Akun anda berhasil terintegrasi dengan Akun Simak !"
         }
 
         with connection.cursor() as cursor:
-            sql = "UPDATE tb_profile SET tb_profile.userID=%s WHERE tb_profile.nim=%s"
+            sql = "UPDATE tb_profile SET tb_profile.userID = %s WHERE tb_profile.nim = %s"
             cursor.execute(sql, (cekUserID, nim))
         connection.commit()
 
