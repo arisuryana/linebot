@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 import os
 import pymysql.cursors
+from datetime import date
 import json
 import dialogflow_v2
 
@@ -29,6 +30,9 @@ def webhook():
 
 def Awal(data):
     cekUserID = data.get("originalDetectIntentRequest").get("payload").get("data").get("source").get("userId")
+    id_pesan = data.get("originalDetectIntentRequest").get("payload").get("data").get("message").get("id")
+    pesan = data.get("originalDetectIntentRequest").get("payload").get("data").get("message").get("text")
+    id_inbox = ""
 
     try:
         result = None
@@ -36,6 +40,13 @@ def Awal(data):
             sql = "SELECT * FROM tb_profile WHERE tb_profile.userID = %s"
             cursor.execute(sql, (cekUserID))
             result = cursor.fetchone()
+
+        with connection.cursor() as cursor:
+            sql = "INSERT INTO tb_inbox (id_pesan, pesan, userID, tanggal) VALUES (%s, %s, %s, %s)"
+            cursor.execute(sql, (id_pesan, pesan, cekUserID, date.today().strftime("%Y-%m-%d")))
+            id_inbox = cursor.lastrowid
+
+        connection.commit()
 
         response = {
             'fulfillmentMessages': [
@@ -58,11 +69,35 @@ def Awal(data):
             ]
         }
 
+        with connection.cursor() as cursor:
+            sql = "INSERT INTO tb_outbox (id_inbox, response) VALUES (%s, %s)"
+            cursor.execute(sql, (id_inbox, "Halo {}, Silahkan pilih menu di bawah".format(result['nama'])))
+            sql = "UPDATE tb_inbox SET tb_inbox.status = '1' WHERE tb_inbox.id_inbox = %s"
+            cursor.execute(sql, (id_inbox))
+
+        connection.commit()
+
         return jsonify(response)
+
     except Exception:
+        with connection.cursor() as cursor:
+            sql = "INSERT INTO tb_inbox (id_pesan, pesan, userID, tanggal) VALUES (%s, %s, %s, %s)"
+            cursor.execute(sql, (id_pesan, pesan, cekUserID, date.today().strftime("%Y-%m-%d")))
+            id_inbox = cursor.lastrowid
+
+        connection.commit()
+
         response = {
             'fulfillmentText': "Akun anda belum terkait dengan Sistem Simak, mohon input nim Anda"
         }
+
+        with connection.cursor() as cursor:
+            sql = "INSERT INTO tb_outbox (id_inbox, response) VALUES (%s, %s)"
+            cursor.execute(sql, (id_inbox, "Akun anda belum terkait dengan Sistem Simak, mohon input nim Anda"))
+            sql = "UPDATE tb_inbox SET tb_inbox.status = '1' WHERE tb_inbox.id_inbox = %s"
+            cursor.execute(sql, (id_inbox))
+
+        connection.commit()
 
         return jsonify(response)
 
