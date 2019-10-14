@@ -37,13 +37,36 @@ def Awal(data):
             cursor.execute(sql, (cekUserID))
             result = cursor.fetchone()
 
-        print(result)
+        response = {
+            'fulfillmentText': "Halo {}, Silahkan pilih menu di bawah".format(result['nama']),
+            'fulfillmentMessages': [
+                {
+                    "card": {
+                        "title": "Menu",
+                        "buttons": [
+                            {
+                                "text": "Cek Profil",
+                                "postback": "cek profil"
+                            },
+                            {
+                                "text": "Info Akademik",
+                                "postback": "info akademik"
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
 
-        return jsonify({'fulfillmentText': result['nama']})
+        return jsonify(response)
+    except Exception:
+        response = {
+            'fulfillmentText': "Akun anda belum terkait dengan Sistem Simak, mohon input nim Anda"
+        }
 
+        return jsonify(response)
     finally:
         connection.close()
-
 
 
 if __name__ == '__main__':
