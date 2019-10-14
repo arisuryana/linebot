@@ -38,8 +38,10 @@ def Awal(data):
             result = cursor.fetchone()
 
         response = {
-            'fulfillmentText': "Halo {}, Silahkan pilih menu di bawah".format(result['nama']),
             'fulfillmentMessages': [
+                {
+                    "text": "Halo {}, Silahkan pilih menu di bawah".format(result['nama'])
+                },
                 {
                     "card": {
                         "title": "Menu",
@@ -65,8 +67,6 @@ def Awal(data):
         }
 
         return jsonify(response)
-    finally:
-        connection.close()
 
 
 if __name__ == '__main__':
