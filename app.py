@@ -24,7 +24,7 @@ def webhook():
 
     if intent_name == 'Awal':
         return Awal(data)
-    elif intent_name == 'Awal - custom':
+    elif intent_name == 'Awalcustom':
         return AwalCustom(data)
 
     return jsonify(request.get_json())
