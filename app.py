@@ -4,7 +4,7 @@ import json
 import dialogflow_v2
 
 app = Flask(__name__)
-PORT = os.environ.get("PORT", 5000)
+PORT = int(os.environ.get("PORT", 5000))
 
 # def results():
 #     req = request.get_json()
@@ -24,4 +24,4 @@ def webhook():
 
 
 if __name__ == '__main__':
-    app.run(port=PORT)
+    app.run(port=PORT, host='0.0.0.0')
