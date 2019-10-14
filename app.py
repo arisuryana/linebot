@@ -24,6 +24,8 @@ def webhook():
 
     if intent_name == 'Awal':
         return Awal(data)
+    elif intent_name == 'Awal - custom':
+        return AwalCustom(data)
 
     return jsonify(request.get_json())
 
@@ -62,42 +64,74 @@ def Awal(data):
             ]
         }
 
-        with connection.cursor() as cursor:
-            sql = "INSERT INTO tb_inbox (id_pesan, pesan, userID, tanggal) VALUES (%s, %s, %s, %s)"
-            cursor.execute(sql, (id_pesan, pesan, cekUserID, date.today().strftime("%Y-%m-%d")))
-            id_inbox = cursor.lastrowid
-
-        connection.commit()
-
-        with connection.cursor() as cursor:
-            sql = "INSERT INTO tb_outbox (id_inbox, response) VALUES (%s, %s)"
-            cursor.execute(sql, (id_inbox, "Halo {}, Silahkan pilih menu di bawah".format(result['nama'])))
-            sql = "UPDATE tb_inbox SET tb_inbox.status = '1' WHERE tb_inbox.id_inbox = %s"
-            cursor.execute(sql, (id_inbox))
-
-        connection.commit()
+        # with connection.cursor() as cursor:
+        #     sql = "INSERT INTO tb_inbox (id_pesan, pesan, userID, tanggal) VALUES (%s, %s, %s, %s)"
+        #     cursor.execute(sql, (id_pesan, pesan, cekUserID, date.today().strftime("%Y-%m-%d")))
+        #     id_inbox = cursor.lastrowid
+        #
+        # connection.commit()
+        #
+        # with connection.cursor() as cursor:
+        #     sql = "INSERT INTO tb_outbox (id_inbox, response) VALUES (%s, %s)"
+        #     cursor.execute(sql, (id_inbox, "Halo {}, Silahkan pilih menu di bawah".format(result['nama'])))
+        #     sql = "UPDATE tb_inbox SET tb_inbox.status = '1' WHERE tb_inbox.id_inbox = %s"
+        #     cursor.execute(sql, (id_inbox))
+        #
+        # connection.commit()
 
         return jsonify(response)
 
     except Exception:
-        with connection.cursor() as cursor:
-            sql = "INSERT INTO tb_inbox (id_pesan, pesan, userID, tanggal) VALUES (%s, %s, %s, %s)"
-            cursor.execute(sql, (id_pesan, pesan, cekUserID, date.today().strftime("%Y-%m-%d")))
-            id_inbox = cursor.lastrowid
-
-        connection.commit()
+        # with connection.cursor() as cursor:
+        #     sql = "INSERT INTO tb_inbox (id_pesan, pesan, userID, tanggal) VALUES (%s, %s, %s, %s)"
+        #     cursor.execute(sql, (id_pesan, pesan, cekUserID, date.today().strftime("%Y-%m-%d")))
+        #     id_inbox = cursor.lastrowid
+        #
+        # connection.commit()
 
         response = {
             'fulfillmentText': "Akun anda belum terkait dengan Sistem Simak, mohon input nim Anda"
         }
 
-        with connection.cursor() as cursor:
-            sql = "INSERT INTO tb_outbox (id_inbox, response) VALUES (%s, %s)"
-            cursor.execute(sql, (id_inbox, "Akun anda belum terkait dengan Sistem Simak, mohon input nim Anda"))
-            sql = "UPDATE tb_inbox SET tb_inbox.status = '1' WHERE tb_inbox.id_inbox = %s"
-            cursor.execute(sql, (id_inbox))
+        # with connection.cursor() as cursor:
+        #     sql = "INSERT INTO tb_outbox (id_inbox, response) VALUES (%s, %s)"
+        #     cursor.execute(sql, (id_inbox, "Akun anda belum terkait dengan Sistem Simak, mohon input nim Anda"))
+        #     sql = "UPDATE tb_inbox SET tb_inbox.status = '1' WHERE tb_inbox.id_inbox = %s"
+        #     cursor.execute(sql, (id_inbox))
+        #
+        # connection.commit()
 
+        return jsonify(response)
+
+def AwalCustom(data):
+    cekUserID = data.get("originalDetectIntentRequest").get("payload").get("data").get("source").get("userId")
+    id_pesan = data.get("originalDetectIntentRequest").get("payload").get("data").get("message").get("id")
+    pesan = data.get("originalDetectIntentRequest").get("payload").get("data").get("message").get("text")
+    nim = data.get("queryResult").get("parameters").get("number")
+
+    try:
+        result = None
+        with connection.cursor() as cursor:
+            sql = "SELECT * FROM tb_profile WHERE tb_profile.nim = %s"
+            cursor.execute(sql, (nim))
+            result = cursor.fetchone()
+
+        response = {
+            'fulfillmentText': "Akun anda sudah terintegrasi dengan Akun Simak !"
+        }
+
+        with connection.cursor() as cursor:
+            sql = "UPDATE tb_profile SET tb_profile.userID=%s WHERE tb_profile.nim=%s"
+            cursor.execute(sql, (cekUserID, nim))
         connection.commit()
+
+        return jsonify(response)
+
+    except Exception:
+
+        response = {
+            'fulfillmentText': "Mohon maaf, anda tidak memiliki Akun Simak"
+        }
 
         return jsonify(response)
 
