@@ -40,11 +40,9 @@ def Awal(data):
         response = {
             'fulfillmentMessages': [
                 {
-                    "text": "Halo {}, Silahkan pilih menu di bawah".format(result['nama'])
-                },
-                {
                     "card": {
                         "title": "Menu",
+                        "subtitle": "Halo {}, Silahkan pilih menu di bawah".format(result['nama']),
                         "buttons": [
                             {
                                 "text": "Cek Profil",
