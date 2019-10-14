@@ -17,6 +17,9 @@ PORT = os.environ.get("PORT", 5000)
 
 @app.route('/', methods=['POST'])
 def webhook():
+    data = request.get_json()
+    intent_name = data.get("queryResult").get("intent").get("displayName")
+    print(intent_name)
     return jsonify(request.get_json())
 
 
