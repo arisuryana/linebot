@@ -28,6 +28,8 @@ def webhook():
         return AwalCustom(data)
     elif intent_name == 'cekProfil':
         return cekProfil(data)
+    elif intent_name == 'infoAkademik':
+        return infoAkademik(data)
 
     return jsonify(request.get_json())
 
@@ -159,6 +161,31 @@ def cekProfil(data):
         }
 
         return jsonify(response)
+
+def infoAkademik(data):
+    pesan = data.get("originalDetectIntentRequest").get("payload").get("data").get("message").get("text")
+
+    response = {
+        'fulfillmentMessages': [
+            {
+                "card": {
+                    "title": "Info Akademik",
+                    "buttons": [
+                        {
+                            "text": "Lihat KHS",
+                            "postback": "lihat khs"
+                        },
+                        {
+                            "text": "Cek IPK",
+                            "postback": "cek ipk"
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+
+    return jsonify(response)
 
 if __name__ == '__main__':
     app.run(port=PORT, host='0.0.0.0')
