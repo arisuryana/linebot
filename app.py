@@ -145,10 +145,10 @@ def cekProfil(data):
         with connection.cursor() as cursor:
             sql = "SELECT * FROM tb_profile WHERE tb_profile.userID = %s"
             cursor.execute(sql, (cekUserID))
-            hasil = cursor.fetchone()
+            hasil = cursor.fetchall()
 
         response = {
-            'fulfillmentText': "NIM : {} Nama : {}".format(hasil['nim','nama'])
+            'fulfillmentText': "NIM : {}"+"{}".format(hasil['nim','nama'])
         }
 
         return jsonify(response)
