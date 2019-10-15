@@ -148,7 +148,7 @@ def cekProfil(data):
             hasil = cursor.fetchall()
 
         response = {
-            'fulfillmentText': "NIM : {}".format(hasil['nim'])
+            'fulfillmentText': "NIM : {}".format(hasil[1,2])
         }
 
         return jsonify(response)
