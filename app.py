@@ -148,9 +148,9 @@ def cekProfil(data):
             hasil = cursor.fetchone()
 
         response = {
-            'fulfillmentText': "NIM : ".format(hasil['nim'])
-                               "Nama : ".format(hasil['nama'])
-                               "Alamat : ".format(hasil['alamat'])
+            'fulfillmentText': "NIM : ".format(hasil['nim']),
+                               "Nama : ".format(hasil['nama']),
+                               "Alamat : ".format(hasil['alamat']),
                                "Jurusan : ".format(hasil['jurusan'])
         }
 
