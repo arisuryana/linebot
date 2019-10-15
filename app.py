@@ -26,6 +26,8 @@ def webhook():
         return Awal(data)
     elif intent_name == 'Awalcustom':
         return AwalCustom(data)
+    elif intent_name == 'cekProfil':
+        return cekProfil(data)
 
     return jsonify(request.get_json())
 
@@ -128,13 +130,38 @@ def AwalCustom(data):
         return jsonify(response)
 
     except Exception:
-
         response = {
             'fulfillmentText': "Mohon maaf, anda tidak memiliki Akun Simak"
         }
 
         return jsonify(response)
 
+def cekProfil(data):
+    cekUserID = data.get("originalDetectIntentRequest").get("payload").get("data").get("source").get("userId")
+    pesan = data.get("originalDetectIntentRequest").get("payload").get("data").get("message").get("text")
+
+    try:
+        hasil = None
+        with connection.cursor() as cursor:
+            sql = "SELECT * FROM tb_profile WHERE tb_profile.userID = %s"
+            cursor.execute(sql, (cekUserID))
+            hasil = cursor.fetchone()
+
+        response = {
+            'fulfillmentText': "NIM : ".format(hasil['nim'])
+                               "Nama : ".format(hasil['nama'])
+                               "Alamat : ".format(hasil['alamat'])
+                               "Jurusan : ".format(hasil['jurusan'])
+        }
+
+        return jsonify(response)
+
+    except Exception:
+        response = {
+            'fulfillmentText': "Profil anda tidak tersedia !"
+        }
+
+        return jsonify(response)
 
 if __name__ == '__main__':
     app.run(port=PORT, host='0.0.0.0')
