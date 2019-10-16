@@ -282,7 +282,7 @@ def cekKhsValue(data):
 
         st = ""
         for row in records:
-            st += "Mata Kuliah : {}\nNilai : {}\n".format(row['mata_kulia'], row['huruf'])
+            st += "Mata Kuliah : {}\nNilai : {}\n".format(row['mata_kuliah'], row['huruf'])
 
         response = {
             'fulfillmentText':st
