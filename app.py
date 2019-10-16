@@ -279,13 +279,16 @@ def cekKhsValue(data):
             sql = "CALL khs(%s, %s, %s)"
             cursor.execute(sql, (cekUserID, semester, thn_ajaran))
             records = cursor.fetchall()
+            sql = "CALL cekips(%s, %s, %s)"
+            cursor.execute(sql, (cekUserID, semester, thn_ajaran))
+            hasil = cursor.fetchone()
 
-        st = "Kartu Hasil Studi {} {}".format(semester, thn_ajaran)
+        st = "Kartu Hasil Studi {} {} :\n\n".format(semester, thn_ajaran)
         for row in records:
             st += "Mata Kuliah : {}\nNilai : {}\n\n".format(row['mata_kuliah'], row['huruf'])
 
         response = {
-            'fulfillmentText':st
+            'fulfillmentText':st+"\n\nIP Semester : {}".format(hasil['ips'])
         }
 
         return jsonify(response)
