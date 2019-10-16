@@ -253,13 +253,13 @@ def cekIpk(data):
             ipk = cursor.fetchone()
 
         response ={
-            'fulfillmentText': "Nilai IPK : {}".format(ipk)
+            'fulfillmentText': "Nilai IPK : {}".format(ipk['ipk'])
         }
 
         return jsonify(response)
 
-    except Exception:
-
+    except Exception as error:
+        print(error)
         response = {
             'fulfillmentText': "Nilai IPK anda tidak ditemukan !"
         }
