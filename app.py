@@ -246,11 +246,12 @@ def cekIpk(data):
     pesan = data.get("originalDetectIntentRequest").get("payload").get("data").get("message").get("text")
     id_profile = ""
 
-    try:
-        with connection.cursor() as cek:
-            sql = "SELECT tb_profile.id_profile WHERE tb_profile.userID = %s"
-            id_profile = cek.execute(sql, (cekUserID))
+    with connection.cursor() as cek:
+        sql = "SELECT tb_profile.id_profile WHERE tb_profile.userID = %s"
+        cek.execute(sql, (cekUserID))
+        id_profile = cek.fetchone()
 
+    try:
         ipk = None
         with connection.cursor() as cursor:
             sql = "SELECT ROUND(SUM(tb_mk.sks*tb_nilai.angka)/SUM(tb_mk.sks),2) AS ipk FROM tb_profile,tb_periode,tb_khs,tb_detail_khs,tb_mk,tb_nilai " \
