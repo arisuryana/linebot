@@ -300,7 +300,8 @@ def cekKhsValue(data):
 
         return jsonify(response)
 
-    except Exception:
+    except Exception as error:
+        print(error)
         response = {
             'fulfillmentText':"Mohon maaf, Kartu Hasil Studi tidak ditemukan"
         }
