@@ -131,6 +131,7 @@ def AwalCustom(data):
             sql = "SELECT tb_profile.nim FROM tb_profile WHERE tb_profile.nim = %s"
             cursor.execute(sql, (nim))
             result = cursor.fetchone()
+            test = result['nim']
 
         response = {
             'fulfillmentText': "Akun anda berhasil terintegrasi dengan Akun Simak !"
