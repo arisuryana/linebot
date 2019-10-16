@@ -280,9 +280,9 @@ def cekKhsValue(data):
             cursor.execute(sql, (cekUserID, semester, thn_ajaran))
             records = cursor.fetchall()
 
-        st = ""
+        st = "Kartu Hasil Studi {} {}".format(semester, thn_ajaran)
         for row in records:
-            st += "Mata Kuliah : {}\nNilai : {}\n".format(row['mata_kuliah'], row['huruf'])
+            st += "Mata Kuliah : {}\nNilai : {}\n\n".format(row['mata_kuliah'], row['huruf'])
 
         response = {
             'fulfillmentText':st
