@@ -30,6 +30,10 @@ def webhook():
         return cekProfil(data)
     elif intent_name == 'infoAkademik':
         return infoAkademik(data)
+    elif intent_name == 'ubahDataAlamat':
+        return ubahDataAlamat(data)
+    elif intent_name == 'ubahDataAlamatValue':
+        return ubahDataAlamatValue(data)
 
     return jsonify(request.get_json())
 
@@ -150,7 +154,7 @@ def cekProfil(data):
             hasil = cursor.fetchone()
 
         response = {
-            'fulfillmentText': "NIM : {}".format(hasil['nim'])
+            'fulfillmentText': "Alamat : {}".format(hasil['alamat'])
         }
 
         return jsonify(response)
@@ -186,6 +190,54 @@ def infoAkademik(data):
     }
 
     return jsonify(response)
+
+def ubahDataAlamat(data):
+    cekUserID = data.get("originalDetectIntentRequest").get("payload").get("data").get("source").get("userId")
+    pesan = data.get("originalDetectIntentRequest").get("payload").get("data").get("message").get("text")
+
+    try:
+        hasil = None
+        with connection.cursor() as cursor:
+            sql = "SELECT * FROM tb_profile WHERE tb_profile.userID = %s"
+            cursor.execute(sql, (cekUserID))
+            hasil = cursor.fetchone()
+
+        response = {
+            'fulfillmentText': "Alamat lama anda di {}, input alamat baru dengan keyword awalan alamat".format(hasil['alamat'])
+        }
+
+        return jsonify(response)
+
+    except Exception:
+        response = {
+            'fulfillmentText': "Data alamat tida ditemukan"
+        }
+
+        return jsonify(response)
+
+def ubahDataAlamatValue(data):
+    cekUserID = data.get("originalDetectIntentRequest").get("payload").get("data").get("source").get("userId")
+    pesan = data.get("originalDetectIntentRequest").get("payload").get("data").get("message").get("text")
+    alamat = data.get("queryResult").get("parameters").get("address")
+
+    try:
+        with connection.cursor() as cursor:
+            sql = "UPDATE tb_profile SET tb_profile.alamat = %s WHERE tb_profile.userID = %s"
+            cursor.execute(sql, (alamat, cekUserID))
+        connection.commit()
+
+        response = {
+            'fulfillmentText': "Alamat anda berhasil diubah, silahkan cek profil"
+        }
+
+        return jsonify(response)
+
+    except Exception:
+        response = {
+            'fulfillmentText': "Data tidak berhasil diubah !"
+        }
+
+        return jsonify(response)
 
 if __name__ == '__main__':
     app.run(port=PORT, host='0.0.0.0')
