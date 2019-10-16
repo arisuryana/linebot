@@ -244,28 +244,16 @@ def ubahDataAlamatValue(data):
 def cekIpk(data):
     cekUserID = data.get("originalDetectIntentRequest").get("payload").get("data").get("source").get("userId")
     pesan = data.get("originalDetectIntentRequest").get("payload").get("data").get("message").get("text")
-    id_profile = ""
-
-    with connection.cursor() as cek:
-        sql = "SELECT tb_profile.id_profile WHERE tb_profile.userID = %s"
-        cek.execute(sql, (cekUserID))
-        id_profile = cek.fetchone()
 
     try:
         ipk = None
         with connection.cursor() as cursor:
-            sql = "SELECT ROUND(SUM(tb_mk.sks*tb_nilai.angka)/SUM(tb_mk.sks),2) AS ipk FROM tb_profile,tb_periode,tb_khs,tb_detail_khs,tb_mk,tb_nilai " \
-                  "WHERE tb_profile.id_profile=tb_khs.profile_id " \
-                  "AND tb_periode.id_periode=tb_khs.periode_id " \
-                  "AND tb_khs.id_khs=tb_detail_khs.khs_id " \
-                  "AND tb_mk.id_mk=tb_detail_khs.mk_id " \
-                  "AND tb_nilai.id_nilai=tb_detail_khs.nilai_id " \
-                  "AND tb_profile.id_profile = %s"
-            cursor.execute(sql, (id_profile))
+            sql = "CALL cekipk('%s')"
+            cursor.execute(sql, (cekUserID))
             ipk = cursor.fetchone()
 
         response ={
-            'fulfillmentText': "Nilai IPK : {}".format(ipk['ipk'])
+            'fulfillmentText': "Nilai IPK : {}".format(ipk)
         }
 
         return jsonify(response)
