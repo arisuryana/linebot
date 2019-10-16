@@ -267,6 +267,8 @@ def cekIpk(data):
             'fulfillmentText': "Nilai IPK : {}".format(ipk['ipk'])
         }
 
+        return jsonify(response)
+
     except Exception:
 
         response = {
