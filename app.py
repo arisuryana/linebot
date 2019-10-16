@@ -248,7 +248,7 @@ def cekIpk(data):
     try:
         ipk = None
         with connection.cursor() as cursor:
-            sql = "CALL cekipk('%s')"
+            sql = "CALL cekipk(%s)"
             cursor.execute(sql, (cekUserID))
             ipk = cursor.fetchone()
 
