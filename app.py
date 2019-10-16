@@ -69,6 +69,10 @@ def Awal(data):
                             {
                                 "text": "Info Akademik",
                                 "postback": "info akademik"
+                            },
+                            {
+                                "text": "Ubah Data Profil",
+                                "postback": "ubah data"
                             }
                         ]
                     }
