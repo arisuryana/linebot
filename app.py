@@ -203,7 +203,7 @@ def ubahDataAlamat(data):
             hasil = cursor.fetchone()
 
         response = {
-            'fulfillmentText': "Alamat lama anda di {}, input alamat baru dengan keyword awalan alamat".format(hasil['alamat'])
+            'fulfillmentText': "Alamat lama anda di {}, input alamat baru dengan keyword awalan alamat baru".format(hasil['alamat'])
         }
 
         return jsonify(response)
