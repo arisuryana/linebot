@@ -36,6 +36,8 @@ def webhook():
         return ubahDataAlamatValue(data)
     elif intent_name == 'cekIpk':
         return cekIpk(data)
+    elif intent_name == 'cekKhsValue':
+        return cekKhsValue(data)
 
     return jsonify(request.get_json())
 
@@ -122,7 +124,7 @@ def AwalCustom(data):
     try:
         result = None
         with connection.cursor() as cursor:
-            sql = "SELECT * FROM tb_profile WHERE tb_profile.nim = %s"
+            sql = "SELECT tb_profile.nim FROM tb_profile WHERE tb_profile.nim = %s"
             cursor.execute(sql, (nim))
             result = cursor.fetchone()
 
@@ -262,6 +264,45 @@ def cekIpk(data):
         print(error)
         response = {
             'fulfillmentText': "Nilai IPK anda tidak ditemukan !"
+        }
+
+        return jsonify(response)
+
+def cekKhsValue(data):
+    cekUserID = data.get("originalDetectIntentRequest").get("payload").get("data").get("source").get("userId")
+    pesan = data.get("originalDetectIntentRequest").get("payload").get("data").get("message").get("text")
+    semester = data.get("queryResult").get("parameters").get("semester")
+    thn_ajaran = data.get("queryResult").get("parameters").get("thn_ajaran")
+
+    try:
+        with connection.cursor() as cursor:
+            sql = "CALL khs(%s, %s, %s)"
+            cursor.execute(sql, (cekUserID, semester, thn_ajaran))
+            records = cursor.fetchall()
+
+        st = ''
+        for row in records:
+            if row[0]==0:
+                st = st + 'Mata Kuliah : %s'%row[0]+', Nilai : %s'%row[1]+"\n"
+            else:
+                st = st + 'Mata Kuliah : %s'%row[0]+', Nilai : %s'%row[1]+"\n"
+
+        response = {
+            "fulfillmentMessages":[
+                {
+                    "card": {
+                        "title": "Kartu Hasil Studi\n",
+                        "subtitle": st
+                    },
+                },
+            ],
+        }
+
+        return jsonify(response)
+
+    except Exception:
+        response = {
+            'fulfillmentText':"Mohon maaf, Kartu Hasil Studi tidak ditemukan"
         }
 
         return jsonify(response)
