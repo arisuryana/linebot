@@ -154,7 +154,7 @@ def cekProfil(data):
             hasil = cursor.fetchone()
 
         response = {
-            'fulfillmentText': "Alamat : {}".format(hasil['alamat'])
+            'fulfillmentText': "Alamat : {}".format(hasil)
         }
 
         return jsonify(response)
