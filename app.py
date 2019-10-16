@@ -288,7 +288,7 @@ def cekKhsValue(data):
             st += "Mata Kuliah : {}\nNilai : {}\n\n".format(row['mata_kuliah'], row['huruf'])
 
         response = {
-            'fulfillmentText':st+"\n\nIP Semester : {}".format(hasil['ips'])
+            'fulfillmentText':st+"\nIP Semester : {}".format(hasil['ips'])
         }
 
         return jsonify(response)
