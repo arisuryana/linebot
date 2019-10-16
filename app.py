@@ -280,22 +280,12 @@ def cekKhsValue(data):
             cursor.execute(sql, (cekUserID, semester, thn_ajaran))
             records = cursor.fetchall()
 
-        st = ''
+        st = ""
         for row in records:
-            if row[0]==0:
-                st = st + 'Mata Kuliah : %s'%row[0]+', Nilai : %s'%row[1]+"\n"
-            else:
-                st = st + 'Mata Kuliah : %s'%row[0]+', Nilai : %s'%row[1]+"\n"
+            st += "Mata Kuliah : {}\nNilai : {}\n".format(row['mata_kulia'], row['huruf'])
 
         response = {
-            "fulfillmentMessages":[
-                {
-                    "card": {
-                        "title": "Kartu Hasil Studi\n",
-                        "subtitle": st
-                    },
-                },
-            ],
+            'fulfillmentText':st
         }
 
         return jsonify(response)
